@@ -1,0 +1,225 @@
+
+XCOMM #include "config/configure.in"
+
+PYTHIA_VERSION = 5
+XCOMM PYTHIA_LIB = -L$(CERN_ROOT)/lib -ljetset74
+XCOMM PYTHIA_FLAGS =
+
+SOREV = 05a
+
+
+XCOMM ****************************************************************
+XCOMM AIXArchitecture
+XCOMM ****************************************************************
+#if defined(AIXArchitecture)
+/* 01/01/19  A.Miyamoto for jlc.cc        */
+#ifndef DOSHRLIB
+#define DOSHRLIB
+#endif
+SHRLIBFLAGS = 
+.SUFFIXES: .F
+.F.o :
+	$(FF) -c $(FFLAGS) $(INCPATH) $*.F -o $*.o
+CDEBUGFLAGS = -O
+CFLAGS	= $(CDEBUGFLAGS) -DAIX -DKEK -DUNIX -DJLC \
+	$(EXTRADEFINES) $(SHRLIBFLAGS) $(INCPATH)
+FDEBUGFLAGS = -O3 -qstrict -qarch=pwr3 -qextname -qfixed -qsave  -qinitauto \
+	-brtl -bshared 
+FFLAGS	= $(FDEBUGFLAGS) -WF,-DKEK,-DUNIX,-DJLC,-DAIX \
+	$(PYTHIA_FLAGS_AIX) $(EXTRADEFINES)  $(SHRLIBFLAGS)
+FFLAGSE	= $(EXTRADEFINES) $(SHRLIBFLAGS) 
+CC      = cc
+FF	= f90
+RANLIB  = /usr/bin/ranlib
+INSTALL = cp
+INSTALLFLAGS = 
+INSTLIBFLAGS = 
+#endif
+
+
+
+XCOMM ****************************************************************
+XCOMM HPArchitecture
+XCOMM ****************************************************************
+#if defined(HPArchitecture)
+/* 99/05/25 K.Fujii     Don't create shared lib.          */
+/*                      Just create *.a with a PIC flag   */
+/* #define DOSHRLIB */
+#ifndef ENABLESHARED
+#ifdef DOSHRLIB
+#undef DOSHRLIB
+#endif
+#else
+#ifndef DOSHRLIB
+#define DOSHRLIB
+#endif
+#endif
+SHRLIBFLAGS = +Z
+.SUFFIXES: .F
+.F.o :
+	$(FF) -c $(FFLAGS) $(INCPATH) $*.F -o $*.o
+CDEBUGFLAGS = -O
+CFLAGS	= $(CDEBUGFLAGS) -DHP -DKEK -DUNIX -DJLC \
+	$(EXTRADEFINES) $(SHRLIBFLAGS) $(INCPATH)
+FDEBUGFLAGS = +O0
+FFLAGS	= $(FDEBUGFLAGS) -DHP -DKEK -DUNIX -DJLC -K +ppu -WF,-UPWB \
+	$(PYTHIA_FLAGS) $(EXTRADEFINES)  $(SHRLIBFLAGS) $(PYTHIA_FLAGS) 
+FFLAGSE	= -DHP -DKEK -DUNIX -DJLC -K +e -WF,-UPWB \
+	$(EXTRADEFINES)  $(SHRLIBFLAGS)
+CC      = cc
+FF	= f77
+RANLIB  = /bin/ranlib
+INSTALL = install
+#endif
+
+XCOMM ****************************************************************
+XCOMM hitachiArchitecture
+XCOMM (note)
+XCOMM Important Flags
+XCOMM F77FORTRAN : Create libraries using f77 compiler
+XCOMM F90FORTRAN : Create libraries using f90 compiler
+XCOMM DOSHRLIB   : Create shared libraries  
+XCOMM   default setting is define F90FORTRAN and DOSHRLIB
+XCOMM ****************************************************************
+#if defined(hitachiArchitecture)
+XCOMM TO change configuration , edit following three lines properly.
+XCOMM #define F77FORTRAN
+#define F90FORTRAN
+#define DOSHRLIB
+
+XCOMM #include "hitachi.def"
+#endif
+
+
+XCOMM ****************************************************************
+XCOMM MachTenPPCArchitecture
+XCOMM ****************************************************************
+#if defined(MachTenPPCArchitecture)
+CFLAGS = -O -DUNIX -DKEK -DJLC -DMACHTEN_PPC $(EXTRADEFINES) $(INCPATH)
+FFLAGS = -O -fno-automatic -DUNIX -DKEK -DJLC -DMACHTEN_PPC $(EXTRADEFINES) \
+	$(INCPATH)
+RANLIB = ranlib
+#endif
+
+XCOMM ****************************************************************
+XCOMM PPCArchitecture
+XCOMM ****************************************************************
+#if defined(PowerPCArchitecture)
+#ifndef PPCArchitecture
+#define PPCArchitecture
+#endif
+#endif
+#if defined(PPCArchitecture)
+#ifndef ENABLESHARED
+#ifdef DOSHRLIB
+#undef DOSHRLIB
+#endif
+#else
+#ifndef DOSHRLIB
+#define DOSHRLIB
+#endif
+#endif
+#ifdef DOSHRLIB
+REQUIREDLIBS = -lg2c -lm -lc -rdynamic
+#endif
+SHRLIBFLAGS = -fPIC
+CDEBUGFLAGS = -O2
+CFLAGS = $(CDEBUGFLAGS) \
+	-fno-strength-reduce -fomit-frame-pointer $(SHRLIBFLAGS) \
+	-DUNIX -DKEK -DJLC -DMACHTEN_PPC \
+	-Dlinux -DPPC -D__powerpc__ -D_POSIX_SOURCE \
+	-D_BSD_SOURCE -D_GNU_SOURCE -DX_LOCALE $(EXTRADEFINES) $(INCPATH)	
+FDEBUGFLAGS =  -O2
+FFLAGS = $(FDEBUGFLAGS) \
+        -fdollar-ok -fno-backslash -fno-automatic -fno-f90 -fugly-complex \
+        -fno-globals -fugly-init -Wno-globals \
+	-fno-second-underscore \
+        $(SHRLIBFLAGS) \
+        -DUNIX -DKEK -DJLC -DMACHTEN_PPC -DG77_521_OR_GREATER \
+	$(PYTHIA_FLAGS) $(EXTRADEFINES) $(INCPATH)
+CC = gcc
+FF = g77
+RANLIB = ranlib
+#endif
+
+
+
+
+XCOMM ****************************************************************
+XCOMM MacOSXArchitecture
+XCOMM ****************************************************************
+#if defined(MacOSXArchitecture) || defined(DarwinArchitecture)
+#ifndef PowerPCArchitecture
+#define PowerPCArchitecture
+#endif
+#ifndef PPCArchitecture
+#define PPCArchitecture
+#endif
+
+#if defined(PPCArchitecture)
+#ifdef DOSHRLIB
+#undef DOSHRLIB
+#endif
+#endif
+
+#ifdef DOSHRLIB
+REQUIREDLIBS = -lg2c -lm -lc
+#endif
+
+SHRLIBFLAGS = -fPIC
+CDEBUGFLAGS = -O
+CFLAGS = $(CDEBUGFLAGS) \
+	-fno-strength-reduce -fomit-frame-pointer $(SHRLIBFLAGS) \
+	-DUNIX -DKEK -DJLC -DMACHTEN_PPC -D__DARWIN__ \
+	-Dlinux -DPPC -D__powerpc__ \
+	-DX_LOCALE $(EXTRADEFINES) $(INCPATH)	
+FDEBUGFLAGS =  -O
+FFLAGS = $(FDEBUGFLAGS) -fPIC \
+        -fdollar-ok -fno-backslash -fno-automatic -fno-f90 -fugly-complex \
+        -fno-globals -fugly-init -Wno-globals \
+	-fno-second-underscore \
+        -DUNIX -DKEK -DJLC -DMACHTEN_PPC -D__DARWIN__ -DG77_521_OR_GREATER \
+	$(PYTHIA_FLAGS) $(EXTRADEFINES) $(INCPATH)
+CC = cc
+FF = g77
+RANLIB = ranlib
+INSTALLFLAGS = -c
+#endif
+
+
+
+XCOMM ****************************************************************
+XCOMM LinuxArchitecture
+XCOMM ****************************************************************
+#if !defined(PPCArchitecture) && defined(LinuxArchitecture)
+#ifndef ENABLESHARED
+#ifdef DOSHRLIB
+#undef DOSHRLIB
+#endif
+#else
+#ifndef DOSHRLIB
+#define DOSHRLIB
+#endif
+#endif
+#ifdef DOSHRLIB
+REQUIREDLIBS = -lg2c -lm -lc -rdynamic
+#endif
+SHRLIBFLAGS = -fPIC
+CDEBUGFLAGS = -O2
+CFLAGS = $(CDEBUGFLAGS) \
+        -fno-strength-reduce -fomit-frame-pointer $(SHRLIBFLAGS) \
+        -DUNIX -DKEK -DJLC -DMACHTEN_PPC -DLITTLE_ENDIAN \
+	-DGNU_SOURCE -DX_LOCALE $(EXTRADEFINES) $(INCPATH)
+FDEBUGFLAGS =  -O2
+FFLAGS = $(FDEBUGFLAGS) \
+        -fdollar-ok -fno-backslash -fno-automatic -fno-f90 -fugly-complex \
+        -fno-globals -fugly-init -Wno-globals \
+	-fno-second-underscore \
+        $(SHRLIBFLAGS) -DLITTLE_ENDIAN \
+        -DUNIX -DKEK -DJLC -DMACHTEN_PPC -DG77_521_OR_GREATER \
+	$(PYTHIA_FLAGS) $(EXTRADEFINES) $(INCPATH)
+CC = gcc
+FF = g77
+RANLIB = ranlib
+#endif
+

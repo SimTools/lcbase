@@ -8,6 +8,8 @@ DllSuf    = so
 SrcSuf    = cxx
 ObjSuf    = o
 HdrSuf    = h
+SOEXT	  = $(DllSuf)
+SOREV     = 05a
 
 JSFBINDIR = $(shell jsf-config --bindir)
 JSFINCDIR = $(shell jsf-config --incdir)
@@ -21,10 +23,15 @@ FFLAGS    = -C -g -qcharlen=32767 \
 	  -qextname -qfixed -qsave -qinitauto -brtl -bshared
 CFLAGS    = -O $(shell root-config --cflags)
 CXXFLAGS      = $(EXTRACXXOPT) -DAIX \
+	  $(shell jsf-config --includes) \
 	  $(shell root-config --cflags) \
+	  $(INCPATH) \
 	  -I/usr/vacpp/include -brtl -bshared
 LD        =  /usr/vacpp/bin/makeC++SharedLib -brtl -bshared -p 0
 LDFLAGS   = -shared -rdynamic \
+	$(shell root-config --libs) -lEG -lxlf90 \
+	-Wl,-bnoquiet
+SOFLAGS   = -shared -rdynamic \
 	$(shell root-config --libs) -lEG -lxlf90 \
 	-Wl,-bnoquiet
 INSTALL   = cp -fp
@@ -32,18 +39,20 @@ else
 ifeq ($(UNAME),Darwin)
 FFLAGS    = -O0 -g -fno-second-underscore
 CFLAGS    =
-LD        = $(FC)
+LD        = $(CXX)
 LDFLAGS   = -r -flat_namespace -nostdlib -undefined suppress
+SOFLAGS   = -r -flat_namespace -nostdlib -undefined suppress
 INSTALL   = install -c
 else
 FFLAGS    = -O2 -g -fPIC -fno-second-underscore
 CFLAGS    = -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags)
 CXXFLAGS    = -Wall -fPIC $(shell jsf-config --includes) \
-		$(shell root-config --cflags)
+		$(shell root-config --cflags) $(INCPATH)
 CXXFLAGS += -D__USEISOCXX__
-LD        = $(FC)
+LD        = $(CXX)
 LDFLAGS   = -shared -rdynamic -Wl,-soname,$(SharedLib) 
+SOFLAGS   = -shared -rdynamic -Wl,-soname,$(SONAME) 
 #		$(shell root-config --libs) -lEG
 INSTALL   = install -cp
 endif
@@ -51,6 +60,9 @@ endif
 
 DEPENDFLAGS = $(CXXFLAGS)
 
+DICTINCLUDES   = $(filter -I% -D%,$(CXXFLAGS)) $(INCPATH)
+
+RMKDEPENDFILES = $(DICTINCLUDES) $(shell cxxdepends)
 
 .SUFFIXES: .$(SrcSuf)
 
