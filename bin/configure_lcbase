@@ -72,16 +72,22 @@ main()
  char *time=__TIME__;
  printf("#define __CONFIG_DATE__ \"%s\"\n",date);
  printf("#define __CONFIG_TIME__ \"%s\"\n",time);
+ printf("#define __JSF_CONFIG_DATE__ \"%s\"\n",date);
+ printf("#define __JSF_CONFIG_TIME__ \"%s\"\n",time);
 
  int gnuc=__GNUC__;
  int gnuc_minor=__GNUC_MINOR__;
  int gnuc_patch=__GNUC_PATCHLEVEL__;
+ printf("#define __JSF_GNUC_VERSION__    %d\n",gnuc);
+ printf("#define __JSF_GNUC_MINOR__      %d\n",gnuc_minor);
+ printf("#define __JSF_GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
  printf("#define __GNUC_VERSION__    %d\n",gnuc);
  printf("#define __GNUC_MINOR__      %d\n",gnuc_minor);
  printf("#define __GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
 
  char *version=__VERSION__;
  printf("#define __GNUC_VERSION_STRING__  \"%s\"\n",version);
+ printf("#define __JSF_GNUC_VERSION_STRING__  \"%s\"\n",version);
 
 }
 EOF
