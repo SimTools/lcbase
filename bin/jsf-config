@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# ---------------------------------------------
+has_pythia5()
+{
+  if [ -x $ROOTSYS/lib/libEGPythia.so ] ; then 
+	echo "jsfpythia5"
+  fi
+}
+
+# ---------------------------------------------
+lciolib()
+{
+  if [ "X$LCIO" != "X" ] ; then
+	echo " -L\$(LCIO)/lib -L\$(LCIO)/sio/lib -llcio -lsio -lz"
+  fi
+}  
+
+# ---------------------------------------------
+print_help()
+{
+cat <<EOF
+ jsf-config [options]
+ options = --has_pythia5  --lciolib  --help
+           --cflags --bindir --libdir --incidr
+EOF
+}
+
+# ---------------------------------------------
+cflags()
+{
+  if [ "X$JSFROOT" != "X" ] ; then 
+	echo "-I$JSFROOT/include"
+  fi
+}
+
+includes()
+{
+  incpath="-I. "
+  if [ "X$JSFROOT" != "X" ] ; then
+     incpath=" $incpath -I$JSFROOT/include "
+  fi
+  incpath=" $incpath -I$LCBASEDIR/include "
+  echo $incpath
+}
+
+bindir()
+{
+  if [ "X$JSFROOT" != "X" ] ; then 
+	echo "$JSFROOT/bin"
+  fi
+}
+
+incdir()
+{
+  if [ "X$JSFROOT" != "X" ] ; then 
+	echo "$JSFROOT/include"
+  fi
+}
+
+libdir()
+{
+  if [ "X$JSFROOT" != "X" ] ; then 
+	echo "$JSFROOT/lib"
+  fi
+}
+
+tmpdir()
+{
+  if [ "X$JSFROOT" != "X" ] ; then 
+	echo "$JSFROOT/tmp"
+  fi
+}
+# ---------------------------------------------
+while [ $# -ne 0 ] 
+do 
+  case "$1" in 
+    --has_pythia5) has_pythia5 ;; 
+    --lciolib) lciolib ;;
+    --help) print_help ;;
+    --cflags) cflags ;;
+    --includes) includes ;;
+    --bindir) bindir ;;
+    --incdir) incdir ;;
+    --libdir) libdir ;;
+    --tmpdir) tmpdir ;;
+    *)  print_help ;;
+  esac
+  shift
+done
+

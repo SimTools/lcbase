@@ -1,0 +1,23 @@
+This directory contains configuration and template files to 
+build jsf, Satellites, etc.
+
+This package requires ROOT.
+
+To complete installation ,
+ (1) Set following environment parameters
+     ROOTSYS   : Top directory of ROOT
+     LCBASEDIR : Top directory of this package
+     PATH      : Command pass, include $ROOTSYS/bin and
+                 $LCBASEDIR/bin. 
+     LD_LIBRARY_PATH : Library path for dynamic loading
+     IMAKEINCLUDE    : Include path for xmkmf
+		       should include $LCBASEDIR/include
+
+     Example will be found in conf/setup.bash
+
+  (2) Do
+     $ make
+
+     This will create file, LCBASEConfig.h, in the include directory.
+
+That's it
