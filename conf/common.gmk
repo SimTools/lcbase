@@ -15,6 +15,7 @@ JSFBINDIR = $(shell jsf-config --bindir)
 JSFINCDIR = $(shell jsf-config --incdir)
 JSFLIBDIR = $(shell jsf-config --libdir)
 JSFTMPDIR = $(shell jsf-config --tmpdir)
+DYLIBFLAGS = $(SOFLAGS)
 
 ifeq ($(UNAME),AIX)
 CXX           = xlC
@@ -39,9 +40,12 @@ else
 ifeq ($(UNAME),Darwin)
 FFLAGS    = -O0 -g -fno-second-underscore
 CFLAGS    =
+CXXFLAGS  = -Wall -pipe $(shell jsf-config --includes) \
+                $(shell root-config --cflags) $(INCPATH)
 LD        = $(CXX)
-LDFLAGS   = -r -flat_namespace -nostdlib -undefined suppress
-SOFLAGS   = -r -flat_namespace -nostdlib -undefined suppress
+LDFLAGS   = -Xlinker -bind_at_load
+DYLIBFLAGS = -dynamiclib -flat_namespace -undefined suppress
+SOFLAGS   = -bundle -flat_namespace -undefined suppress
 INSTALL   = install -c
 else
 FFLAGS    = -O2 -g -fPIC -fno-second-underscore
