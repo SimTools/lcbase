@@ -10,7 +10,7 @@ set cxx="gcc"
 set iret=`which $cxx | grep -c /`
 if ( $iret > 0 ) then
   set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
-  set cppfile=$gccvers/cpp0
+  set cppfile=$gccvers/cc1
   if ( -e $cppfile ) then
   else
     set cppfile=$gccvers/cpp
