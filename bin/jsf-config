@@ -12,7 +12,7 @@ has_pythia5()
 lciolib()
 {
   if [ "X$LCIO" != "X" ] ; then
-	echo " -L\$(LCIO)/lib -L\$(LCIO)/sio/lib -llcio -lsio -lz"
+	echo " -L$LCIO/lib -L$LCIO/sio/lib -llcio -lsio -lz"
   fi
 }  
 
