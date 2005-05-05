@@ -6,18 +6,23 @@
 
 #echo $argv[1]
 
+set uname=`uname`
+
 set cxx="gcc"
 set iret=`which $cxx | grep -c /`
 if ( $iret > 0 ) then
   set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
   set cppfile=$gccvers/cc1
+  if ( $uname == "CYGWIN_NT-5.0" ) then
+     set cppfile=$gccvers/cc1plus.exe
+  endif
   if ( -e $cppfile ) then
   else
     set cppfile=$gccvers/cpp
   endif
   
   set strcmd=`which strings`
-  set incdir=`$strcmd $cppfile  | grep include  | grep "/"`
+  set incdir=`$strcmd $cppfile  | grep include  | grep "/" | uniq `
   foreach i ( $incdir )
     if ( -e $i && $i != "/usr/include" ) then
 	echo -n " -I$i" 

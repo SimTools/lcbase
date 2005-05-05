@@ -114,7 +114,7 @@ main()
 }
 EOF
 
-g++ temp.cxx
+g++ -o a.out temp.cxx
 ./a.out
 
 rm -f temp.cxx a.out
