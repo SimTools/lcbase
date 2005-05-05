@@ -78,6 +78,27 @@ DEPENDFILES  += $(shell cxxdepends)
 #endif
 
 XCOMM # -----------------------------------------------------
+XCOMM # Cygwin architecture
+XCOMM # -----------------------------------------------------
+#if defined(cygwinArchitecture)
+SOEXT         = dll
+LIBF2C	      = -l$(G77EGCS_LIBNAME)
+FC	      = g77
+CXX           = g++ -O2 -g
+CXXFLAGS      = -Wall \
+		$(EXTRACXXOPT) \
+		$(shell jsf-config --includes) \
+		$(shell root-config --cflags)
+SOFLAGS       = -shared -rdynamic
+LDFLAGS       = $(ANALLIB) $(GLIBS) -rdynamic
+LIBS          = $(ROOTLIBS) -lm -ldl
+GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
+		-lXpm -lX11 $(LIBF2C) -lm -ldl
+BLOCKDATA     = 
+DEPENDFILES  += $(shell cxxdepends)
+#endif
+
+XCOMM # -----------------------------------------------------
 XCOMM # MkLinux with egcs
 XCOMM # -----------------------------------------------------
 #if defined(PowerPCArchitecture)
