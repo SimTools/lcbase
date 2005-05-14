@@ -38,6 +38,10 @@ JSFINCDIR     = $(shell jsf-config --incdir)
 
 AIXLIBS       =
 
+#if GNUC_VERSION_CODE < GNUC_VERSION(3,3,0)
+INSTALLFLAGS += -C
+#endif
+
 #ifndef __CERNLIB_PDFLIB__
 CERNLIBLIBS   += pdflib804
 #endif
@@ -157,7 +161,7 @@ GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
 PDFLIB	      = -lpdflib
 BLOCKDATA     = 
 DEPENDFILES  += $(shell cxxdepends)
-INSTALLFLAGS  = -c
+INSTALLFLAGS += -c
 #  ifdef InstallSharedLibrary
 #  undef InstallSharedLibrary
 #  endif
