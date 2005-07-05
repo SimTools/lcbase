@@ -161,7 +161,7 @@ GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
 PDFLIB	      = -lpdflib
 BLOCKDATA     = 
 DEPENDFILES  += $(shell cxxdepends)
-INSTALLFLAGS += -c
+INSTALLFLAGS = -c
 #  ifdef InstallSharedLibrary
 #  undef InstallSharedLibrary
 #  endif
