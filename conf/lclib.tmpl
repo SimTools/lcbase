@@ -1,7 +1,5 @@
-
-XCOMM #include "config/configure.in"
-
-PYTHIA_VERSION = 5
+#include "config/configure.in"
+XCOMM PYTHIA_VERSION = 5
 XCOMM PYTHIA_LIB = -L$(CERN_ROOT)/lib -ljetset74
 XCOMM PYTHIA_FLAGS =
 
@@ -163,7 +161,7 @@ XCOMM ****************************************************************
 #endif
 
 #ifdef DOSHRLIB
-REQUIREDLIBS = -lg2c -lm -lc
+REQUIREDLIBS =  -lgfortran -lgfortranbegin -lm -lc
 #endif
 
 SHRLIBFLAGS = -fPIC
@@ -171,17 +169,18 @@ CDEBUGFLAGS = -O
 CFLAGS = $(CDEBUGFLAGS) \
 	-fno-strength-reduce -fomit-frame-pointer $(SHRLIBFLAGS) \
 	-DUNIX -DKEK -DJLC -DMACHTEN_PPC -D__DARWIN__ \
-	-Dlinux -DPPC -D__powerpc__ \
+	-Dlinux -DPPC -D__powerpc__ -D__GFORTRAN__ \
 	-DX_LOCALE $(EXTRADEFINES) $(INCPATH)	
 FDEBUGFLAGS =  -O
 FFLAGS = $(FDEBUGFLAGS) -fPIC \
-        -fdollar-ok -fno-backslash -fno-automatic -fno-f90 -fugly-complex \
-        -fno-globals -fugly-init -Wno-globals \
+        -fdollar-ok -fno-backslash -fno-automatic \
 	-fno-second-underscore \
         -DUNIX -DKEK -DJLC -DMACHTEN_PPC -D__DARWIN__ -DG77_521_OR_GREATER \
+	-D__GFORTRAN__ \
 	$(PYTHIA_FLAGS) $(EXTRADEFINES) $(INCPATH)
 CC = cc
-FF = g77
+FC = gfortran
+FF = $(FC)
 RANLIB = ranlib
 INSTALLFLAGS = -c
 #endif

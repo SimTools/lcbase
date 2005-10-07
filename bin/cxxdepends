@@ -11,8 +11,15 @@ set uname=`uname`
 set cxx="gcc"
 set iret=`which $cxx | grep -c /`
 if ( $iret > 0 ) then
-  set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
-  set cppfile=$gccvers/cc1
+  if ( $uname != "Darwin" ) then
+    set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
+    set cppfile=$gccvers/cc1
+  else
+    set prefix=`$cxx -v |& grep 'prefix=' | sed -e 's;.*--prefix=\([^ ]*\).*;\1;'`
+    set osvers=`$cxx -v |& grep Target: | sed -e 's;.*Target: *;;'`
+    set gccvers=`$cxx -v |& tail -1 |& sed -e 's;.* \([0-9]*\.[0-9]*\.[0-9]*\) .*;\1;'`
+    set cppfile=$prefix/libexec/gcc/$osvers/$gccvers/cc1
+  endif
   if ( $uname == "CYGWIN_NT-5.0" ) then
      set cppfile=$gccvers/cc1plus.exe
   endif

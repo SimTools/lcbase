@@ -38,14 +38,15 @@ SOFLAGS   = -shared -rdynamic \
 INSTALL   = cp -fp
 else
 ifeq ($(UNAME),Darwin)
-FFLAGS    = -O0 -g -fno-second-underscore
-CFLAGS    =
+FC        = gfortran
+FFLAGS    = -O0 -g -fno-second-underscore -D__GFORTRAN__
+CFLAGS    = -D__GFORTRAN__
 CXXFLAGS  = -Wall -pipe $(shell jsf-config --includes) \
-                $(shell root-config --cflags) $(INCPATH)
+            -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
 LD        = $(CXX)
 LDFLAGS   = -Xlinker -bind_at_load
-DYLIBFLAGS = -dynamiclib -flat_namespace -undefined suppress
-SOFLAGS   = -bundle -flat_namespace -undefined suppress
+DYLIBFLAGS = -dynamiclib -flat_namespace -undefined dynamic_lookup
+SOFLAGS   = -bundle -flat_namespace -undefined dynamic_lookup
 INSTALL   = install -p -c
 else
 FFLAGS    = -O2 -g -fPIC -fno-second-underscore
