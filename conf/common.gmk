@@ -43,6 +43,7 @@ FFLAGS    = -O0 -g -fno-second-underscore -D__GFORTRAN__
 CFLAGS    = -D__GFORTRAN__
 CXXFLAGS  = -Wall -pipe $(shell jsf-config --includes) \
             -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
+CXXFLAGS += -D__USEISOCXX__
 LD        = $(CXX)
 LDFLAGS   = -Xlinker -bind_at_load
 DYLIBFLAGS = -dynamiclib -flat_namespace -undefined dynamic_lookup

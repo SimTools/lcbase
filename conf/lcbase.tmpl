@@ -275,4 +275,7 @@ GCCVER = $(shell $(CXX) -dumpversion 2>/dev/null | sed -e 's;\..*;;')
 ifeq ($(GCCVER),3)
    CXXFLAGS += -D__USEISOCXX__
 endif
+ifeq ($(GCCVER),4)
+   CXXFLAGS += -D__USEISOCXX__
+endif
 
