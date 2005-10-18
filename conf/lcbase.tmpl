@@ -145,7 +145,7 @@ CXX           = c++ -O
 RCINTDEFINES  = -D__DARWIN__
 ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
 FC            = gfortran
-CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ \
+CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ -D__BIG_ENDIAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
