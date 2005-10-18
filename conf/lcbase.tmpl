@@ -138,22 +138,30 @@ XCOMM # -----------------------------------------------------
 #define PowerPCArchitecture
 #endif
 
-FC            = gfortran
 SOEXT         = so
 DylibSuf      = dylib	
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
 CXX           = c++ -O
 RCINTDEFINES  = -D__DARWIN__
+ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+FC            = gfortran
 CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
-/* DYLIBFLAGS    = -dylib -r -nostartfiles -nodefaultlibs */
-/* DYLIBFLAGS    = -dylib -r -nostdlib */
 DYLIBFLAGS    = -dynamiclib -flat_namespace -undefined dynamic_lookup
-/* DYLDFLAGS     = -dynamiclib -undefined suppress -nostdlib -bind_at_load */
 DYLDFLAGS     = -dynamiclib -flat_namespace -undefined dynamic_lookup
 SOFLAGS       = -bundle -flat_namespace -undefined dynamic_lookup
+else
+FC            = g77
+CXXFLAGS      = -pipe -Wall -fsigned-char \
+		$(EXTRACXXOPT) $(RCINTDEFINES) \
+		$(shell jsf-config --includes) \
+		$(shell root-config --cflags)
+DYLIBFLAGS    = -dynamiclib -flat_namespace -undefined suppress
+DYLDFLAGS     = -dynamiclib -flat_namespace -undefined suppress
+SOFLAGS       = -bundle -flat_namespace -undefined suppress
+endif
 LDFLAGS       = $(ANALLIB) $(GLIBS) -Xlinker -bind_at_load
 LIBS          = $(ROOTLIBS) -L/usr/local/lib -lm -ldl
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
@@ -162,7 +170,7 @@ GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
 PDFLIB	      = -lpdflib
 BLOCKDATA     = 
 DEPENDFILES  += $(shell cxxdepends)
-INSTALLFLAGS = -c
+INSTALLFLAGS = -C
 #  ifdef InstallSharedLibrary
 #  undef InstallSharedLibrary
 #  endif
