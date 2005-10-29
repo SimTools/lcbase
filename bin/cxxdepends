@@ -32,9 +32,14 @@ if ( $iret > 0 ) then
   endif
   if ( -e $cppfile ) then
   else
-    set cppfile=$gccvers/cpp
+    set cppfiled=$gccvers/cpp
+    if ( -e $cppfiled ) then
+      set cppfile=$cppfiled
+    else
+      set cppfile=`echo $cppfile | sed -e 's;/lib/;/libexec/;'`
+    endif
   endif
-  
+
   set strcmd=`which strings`
   set incdir=`$strcmd $cppfile  | grep include  | grep "/" | uniq `
   foreach i ( $incdir )
@@ -43,5 +48,4 @@ if ( $iret > 0 ) then
     endif
   end
 endif
-
 
