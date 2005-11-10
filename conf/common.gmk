@@ -62,11 +62,21 @@ LD        = $(CXX)
 LDFLAGS   = -Xlinker -bind_at_load
 INSTALL   = install -p -c
 else
+ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+FC        = gfortran
+FFLAGS    = -O2 -g -fPIC -fno-second-underscore -D__GFORTRAN__
+CFLAGS    = -fPIC $(shell jsf-config --includes) \
+		$(shell root-config --cflags) -D__GFORTRAN__
+CXXFLAGS    = -Wall -fPIC $(shell jsf-config --includes) \
+	      -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
+else
+FC        = g77
 FFLAGS    = -O2 -g -fPIC -fno-second-underscore
 CFLAGS    = -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags)
 CXXFLAGS    = -Wall -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags) $(INCPATH)
+endif
 CXXFLAGS += -D__USEISOCXX__
 LD        = $(CXX)
 LDFLAGS   = -shared -rdynamic -Wl,-soname,$(SharedLib) 
