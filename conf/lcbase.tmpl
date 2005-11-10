@@ -66,9 +66,13 @@ XCOMM # -----------------------------------------------------
 #if defined(LinuxArchitecture)
 SOEXT         = so
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
+ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+FC	      = gfortran
+else
 FC	      = g77
+endif
 CXX           = g++ -O2 -g
-CXXFLAGS      = -Wall -fPIC \
+CXXFLAGS      = -Wall -fPIC -D__GFORTRAN__ \
 		$(EXTRACXXOPT) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
