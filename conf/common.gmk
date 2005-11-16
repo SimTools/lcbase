@@ -60,7 +60,7 @@ endif
 CXXFLAGS += -D__USEISOCXX__
 LD        = $(CXX)
 LDFLAGS   = -Xlinker -bind_at_load
-INSTALL   = install -p -c
+INSTALL   = install -C
 else
 ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
 FC        = gfortran
