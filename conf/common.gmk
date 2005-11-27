@@ -38,7 +38,7 @@ SOFLAGS   = -shared -rdynamic \
 INSTALL   = cp -fp
 else
 ifeq ($(UNAME),Darwin)
-ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 FC        = gfortran
 FFLAGS    = -O0 -g -fno-second-underscore -D__GFORTRAN__
 CFLAGS    = $(shell jsf-config --includes) \
@@ -62,7 +62,7 @@ LD        = $(CXX)
 LDFLAGS   = -Xlinker -bind_at_load
 INSTALL   = install -C
 else
-ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 FC        = gfortran
 FFLAGS    = -O2 -g -fPIC -fno-second-underscore -D__GFORTRAN__
 CFLAGS    = -fPIC $(shell jsf-config --includes) \

@@ -37,7 +37,7 @@ ROOTLIBS     += -lEGPythia -lEG -Wl,-u,pytest_ $(CERNLIBS)
 
 #if defined(MacOSXArchitecture) || defined(DarwinArchitecture)
 /* LIBG2C = -lg2c */
-ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 LIBG2C        = -lgfortran -lgfortranbegin
 else
 LIBG2C        = -lg2c

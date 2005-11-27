@@ -183,7 +183,7 @@ uname -s >> $specfile
 if [ "$systype" != "AIX" ] ; then
   if  [ "`which g77 | grep -v 'no g77'| grep -c g77 `" != 0 ] ; then
     set_g77info $specfile
-  elif [ "`which gfortran | grep -v 'no gfortran' | grep -c gfortran`" != 0 ]; then
+  elif [ "`which gfortran 2>&1 | grep -vc 'no gfortran'`" != 0 ]; then
     set_g95info $specfile
   fi 
 fi

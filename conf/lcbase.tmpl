@@ -66,7 +66,7 @@ XCOMM # -----------------------------------------------------
 #if defined(LinuxArchitecture)
 SOEXT         = so
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
-ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 FC	      = gfortran
 else
 FC	      = g77
@@ -159,7 +159,7 @@ DylibSuf      = dylib
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
 CXX           = c++ -O
 RCINTDEFINES  = -D__DARWIN__
-ifneq ($(shell which gfortran | grep -v 'no gfortran' | grep -c gfortran),0)
+ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 FC            = gfortran
 CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ -D__BIG_ENDIAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
