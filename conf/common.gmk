@@ -86,6 +86,9 @@ INSTALL   = install -cp
 endif
 endif
 
+CLHEPVER      = $(shell clhep-config --version | sed -e 's;CLHEP \([1-9]\)\..*;\1;')
+CXXFLAGS += -D__CLHEPVERSION__=$(CLHEPVER)
+
 DEPENDFLAGS = $(CXXFLAGS)
 
 DICTINCLUDES   = $(filter -I% -D%,$(CXXFLAGS)) $(INCPATH)
