@@ -22,7 +22,7 @@ print_help()
 cat <<EOF
  jsf-config [options]
  options = --has_pythia5  --lciolib  --help
-           --cflags --bindir --libdir --incidr
+           --cflags --bindir --libdir --incidr --fc
 EOF
 }
 
@@ -71,6 +71,15 @@ tmpdir()
 	echo "$JSFROOT/tmp"
   fi
 }
+
+fc()
+{
+ if [ -f $LCBASEDIR/conf/config.data ] ; then
+   grep "FC=" $LCBASEDIR/conf/config.data | cut -d"=" -f2
+ fi
+
+}
+
 # ---------------------------------------------
 while [ $# -ne 0 ] 
 do 
@@ -84,6 +93,7 @@ do
     --incdir) incdir ;;
     --libdir) libdir ;;
     --tmpdir) tmpdir ;;
+    --fc) fc ;;
     *)  print_help ;;
   esac
   shift
