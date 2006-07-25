@@ -75,7 +75,9 @@ tmpdir()
 fc()
 {
  if [ -f $LCBASEDIR/conf/config.data ] ; then
-   grep "FC=" $LCBASEDIR/conf/config.data | cut -d"=" -f2
+   if [ `grep -c "FC=" $LCBASEDIR/conf/config.data` != 0 ] ; then
+     grep "FC=" $LCBASEDIR/conf/config.data | cut -d"=" -f2
+   fi
  fi
 
 }
