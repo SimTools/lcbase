@@ -59,18 +59,13 @@ XCOMM #---------------------------------------------------
 .$(SrcSuf).$(ObjSuf):
 	$(CXX) $(CXXFLAGS) -c $<
 
-
 XCOMM # -----------------------------------------------------
 XCOMM # Linux with egcs
 XCOMM # -----------------------------------------------------
 #if defined(LinuxArchitecture)
 SOEXT         = so
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
-ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
-FC	      = gfortran
-else
-FC	      = g77
-endif
+FC	      = $(shell jsf-config --fc)
 CXX           = g++ -O2 -g
 CXXFLAGS      = -Wall -fPIC -D__GFORTRAN__ \
 		$(EXTRACXXOPT) \
@@ -82,6 +77,11 @@ LIBS          = $(ROOTLIBS) -lm -ldl
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
 		-lXpm -lX11 $(LIBF2C) -lm -ldl
 BLOCKDATA     = 
+FFLAGS 	     += -fPIC
+ifeq ($(shell jsf-config --hosttype),KEKCC) 
+GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib64 \
+                -lXpm -lX11 $(LIBF2C) -lm -ldl
+endif
 DEPENDFILES  += $(shell cxxdepends)
 #  ifdef InstallSharedLibrary
 #  undef InstallSharedLibrary

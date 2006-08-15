@@ -21,7 +21,7 @@ HELASV204   = HELASV204
 #include "conf/lclib.tmpl"
 
 #ifdef CXXPACKAGE
-# include "conf/makejsf.tmpl"
+# include "conf/lcbase.tmpl"
 
 /* ROOT Related Libraries */
 
@@ -31,7 +31,6 @@ ROOTLIBS     += -lEGPythia -lEG $(CERNLIBS)
 ROOTLIBS     += -lEGPythia -lEG -Wl,-u,pytest_ $(CERNLIBS)
 # endif
 #endif
-
 
 /* Analysis Related Fortran Libraries */
 

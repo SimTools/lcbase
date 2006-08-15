@@ -179,6 +179,31 @@ uname -m >> $specfile
 echo -n "#define __UNAME_SYSNAME__ " >> $specfile
 uname -s >> $specfile
 
+if [ "x`uname -s`" == "xLinux" ] ; then
+  if [ -r /etc/issue ] ; then
+    echo -n "#define __JSF_LINUX_RELEASE__ \"" >> $specfile
+    head -1 /etc/issue | tr -d "\n" >> $specfile
+    echo "\"" >> $specfile
+  fi
+fi
+
+################################
+echo -n "#define __JSF_HOSTNAME__ " >> $specfile
+hostname >> $specfile
+
+htypflg=`hostname |  grep -cw -e "cw[0-9]*" `
+if [ "x$htypflg" == "x1" ] ; then
+  echo "#define __JSF_HOSTTYPE__ KEKCC " >> $specfile
+  echo "#define __JSF_FORTRAN_COMPILER__ g77 " >> $specfile
+else
+  iret=`which gfortran 2>&1 |grep -vc 'no gfortran'`
+  if [ "x$iret" == "x1" ] ; then
+    echo "#define __JSF_FORTRAN_COMPILER__ gfortran " >> $specfile
+  else
+    echo "#define __JSF_FORTRAN_COMPILER__ g77 " >> $specfile
+  fi
+fi
+
 
 if [ "$systype" != "AIX" ] ; then
   if  [ "`which g77 2>&1 | grep -c -e 'bin/g77' `" != 0 ] ; then

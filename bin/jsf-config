@@ -74,12 +74,20 @@ tmpdir()
 
 fc()
 {
- if [ -f $LCBASEDIR/conf/config.data ] ; then
-   if [ `grep -c "FC=" $LCBASEDIR/conf/config.data` != 0 ] ; then
-     grep "FC=" $LCBASEDIR/conf/config.data | cut -d"=" -f2
-   fi
+ iret=`grep -c "#define __JSF_FORTRAN_COMPILER__" $LCBASEDIR/include/LCBASEConfig.h`
+ if [ "x$iret" == "x1" ] ; then
+   grep "#define __JSF_FORTRAN_COMPILER__" $LCBASEDIR/include/LCBASEConfig.h |\
+       cut -d" " -f3
  fi
+}
 
+hosttype()
+{
+ iret=`grep -c "#define __JSF_HOSTTYPE__ " $LCBASEDIR/include/LCBASEConfig.h`
+ if [ "x$iret" == "x1" ] ; then
+   grep "#define __JSF_HOSTTYPE__" $LCBASEDIR/include/LCBASEConfig.h |\
+       cut -d" " -f3
+ fi
 }
 
 # ---------------------------------------------
@@ -96,6 +104,7 @@ do
     --libdir) libdir ;;
     --tmpdir) tmpdir ;;
     --fc) fc ;;
+    --hosttype) hosttype ;;
     *)  print_help ;;
   esac
   shift
