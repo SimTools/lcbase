@@ -147,11 +147,13 @@ XCOMM # -----------------------------------------------------
 XCOMM # MacOS X
 XCOMM # -----------------------------------------------------
 #if defined(MacOSXArchitecture) || defined(DarwinArchitecture)
+#ifdef PpcDarwinArchitecture
 #ifndef PPCArchitecture
 #define PPCArchitecture
 #endif
 #ifndef PowerPCArchitecture
 #define PowerPCArchitecture
+#endif
 #endif
 
 SOEXT         = so
@@ -161,7 +163,7 @@ CXX           = c++ -O
 RCINTDEFINES  = -D__DARWIN__
 ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 FC            = gfortran
-CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ -D__BIG_ENDIAN__ \
+CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
@@ -295,7 +297,7 @@ AIXLIBS       = $(ROOTLIBS)
 #endif
 
 
-GCCVER = $(shell $(CXX) -dumpversion 2>/dev/null | sed -e 's;\..*;;')
+GCCVER    = $(shell $(CXX) -dumpversion 2>/dev/null | sed -e 's;\..*;;')
 ifeq ($(GCCVER),3)
    CXXFLAGS += -D__USEISOCXX__
 endif
@@ -309,3 +311,8 @@ CXXFLAGS += -D__CLHEPVERSION__=$(CLHEPVER)
 #define __HasJSFFromLCIO__ 1
 CXXFLAGS += -D__HasJSFFromLCIO__
 
+ifeq (X$(shell uname -p),Xi386)
+CXXFLAGS += -D__LITTLE_ENDIAN__
+else
+CXXFLAGS += -D__BIG_ENDIAN__
+endif
