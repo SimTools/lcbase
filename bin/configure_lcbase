@@ -92,8 +92,8 @@ cat > temp.cxx <<EOF
 #include <stdio.h>
 main()
 {
- char *date=__DATE__;
- char *time=__TIME__;
+ const char *date=__DATE__;
+ const char *time=__TIME__;
  printf("#define __CONFIG_DATE__ \"%s\"\n",date);
  printf("#define __CONFIG_TIME__ \"%s\"\n",time);
 
@@ -103,12 +103,20 @@ main()
  printf("#define __JSF_GNUC_VERSION__    %d\n",gnuc);
  printf("#define __JSF_GNUC_MINOR__      %d\n",gnuc_minor);
  printf("#define __JSF_GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
+ printf("#ifndef __GNUC_VERSION__\n");
  printf("#define __GNUC_VERSION__    %d\n",gnuc);
+ printf("#endif\n");
+ printf("#ifndef __GNUC_MINOR__\n");
  printf("#define __GNUC_MINOR__      %d\n",gnuc_minor);
+ printf("#endif\n");
+ printf("#ifndef __GNUC_PATCHLEVEL__\n");
  printf("#define __GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
+ printf("#endif\n");
 
- char *version=__VERSION__;
+ const char *version=__VERSION__;
+ printf("#ifndef __GNUC_VERSION_STRING\n");
  printf("#define __GNUC_VERSION_STRING__  \"%s\"\n",version);
+ printf("#endif\n");
  printf("#define __JSF_GNUC_VERSION_STRING__  \"%s\"\n",version);
 
 }
