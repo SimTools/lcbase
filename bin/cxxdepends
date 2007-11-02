@@ -6,6 +6,7 @@
 
 #echo $argv[1]
 setenv LANG C
+unsetenv LC_ALL
 
 set uname=`uname`
 
