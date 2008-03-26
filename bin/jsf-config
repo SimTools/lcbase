@@ -41,6 +41,9 @@ includes()
      incpath=" $incpath -I$JSFROOT/include "
   fi
   incpath=" $incpath -I$LCBASEDIR/include "
+  if [ `uname -s` = Darwin ]; then
+     incpath=" $incpath -I/usr/osxws/include "
+  fi
   echo $incpath
 }
 

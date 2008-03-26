@@ -179,7 +179,7 @@ CFLAGS = $(CDEBUGFLAGS) \
 	-Dlinux -DPPC -D__powerpc__ -D__GFORTRAN__ \
 	-DX_LOCALE $(EXTRADEFINES) $(INCPATH)	
 FFLAGS = $(FDEBUGFLAGS) -fPIC \
-        -fdollar-ok -fno-backslash -fno-automatic \
+        -fdollar-ok -fno-backslash -fno-automatic -fno-range-check \
 	-fno-second-underscore /* -ftree-vectorize */ \
         -DUNIX -DKEK -DJLC -DMACHTEN_PPC -D__DARWIN__ -DG77_521_OR_GREATER \
 	-D__GFORTRAN__ \
