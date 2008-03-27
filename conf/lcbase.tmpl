@@ -167,18 +167,22 @@ CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
-DYLIBFLAGS    = -dynamiclib -flat_namespace -single_module -undefined dynamic_lookup
-DYLDFLAGS     = -dynamiclib -flat_namespace -single_module -undefined dynamic_lookup
-SOFLAGS       = -bundle -flat_namespace -single_module -undefined dynamic_lookup
+OSXVERSION    = $(shell sw_vers | sed -n 's/ProductVersion://p' | cut -d . -f 2)
+ifeq ($(shell [ `echo $(OSXVERSION)` -ge 5 ] && echo 1),1)
+SINGLE_MODULE = -single_module
+endif
+DYLIBFLAGS    = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
+DYLDFLAGS     = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
+SOFLAGS       = -bundle -flat_namespace -undefined dynamic_lookup
 else
 FC            = g77
 CXXFLAGS      = -pipe -Wall -fsigned-char \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
-DYLIBFLAGS    = -dynamiclib -flat_namespace -single_module -undefined suppress
-DYLDFLAGS     = -dynamiclib -flat_namespace -single_module -undefined suppress
-SOFLAGS       = -bundle -flat_namespace -single_module -undefined suppress
+DYLIBFLAGS    = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined suppress
+DYLDFLAGS     = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined suppress
+SOFLAGS       = -bundle -flat_namespace -undefined suppress
 endif
 LDFLAGS       = $(ANALLIB) $(GLIBS) -Xlinker -bind_at_load
 LIBS          = $(ROOTLIBS) -L/usr/oxws/lib -lm -ldl
