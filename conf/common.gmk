@@ -76,10 +76,10 @@ CXXFLAGS    = -Wall -fPIC $(shell jsf-config --includes) \
 	      -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
 else
 FC        = g77
-FFLAGS    = -O2 -g -fPIC -fno-second-underscore
-CFLAGS    = -fPIC $(shell jsf-config --includes) \
+FFLAGS    = -m32 -O2 -g -fPIC -fno-second-underscore
+CFLAGS    = -m32 -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags)
-CXXFLAGS    = -Wall -fPIC $(shell jsf-config --includes) \
+CXXFLAGS    = -m32 -Wall -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags) $(INCPATH)
 endif
 CXXFLAGS += -D__USEISOCXX__
