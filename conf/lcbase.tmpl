@@ -67,7 +67,7 @@ SOEXT         = so
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
 FC	      = $(shell jsf-config --fc)
 CXX           = g++ -O2 -g
-CXXFLAGS      = -Wall -fPIC -D__GFORTRAN__ \
+CXXFLAGS      = -m32 -Wall -fPIC -D__GFORTRAN__ \
 		$(EXTRACXXOPT) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
@@ -77,7 +77,7 @@ LIBS          = $(ROOTLIBS) -lm -ldl
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
 		-lXpm -lX11 $(LIBF2C) -lm -ldl
 BLOCKDATA     = 
-FFLAGS 	     += -fPIC
+FFLAGS 	     += -m32 -fPIC
 ifeq ($(shell jsf-config --hosttype),KEKCC) 
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib64 \
                 -lXpm -lX11 $(LIBF2C) -lm -ldl
