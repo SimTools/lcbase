@@ -71,8 +71,8 @@ CXXFLAGS      = -m32 -Wall -fPIC -D__GFORTRAN__ \
 		$(EXTRACXXOPT) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
-SOFLAGS       = -shared -rdynamic
-LDFLAGS       = $(ANALLIB) $(GLIBS) -rdynamic
+SOFLAGS       = -m32 -shared -rdynamic
+LDFLAGS       = -m32 $(ANALLIB) $(GLIBS) -rdynamic
 LIBS          = $(ROOTLIBS) -lm -ldl
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
 		-lXpm -lX11 $(LIBF2C) -lm -ldl

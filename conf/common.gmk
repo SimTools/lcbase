@@ -84,8 +84,8 @@ CXXFLAGS    = -m32 -Wall -fPIC $(shell jsf-config --includes) \
 endif
 CXXFLAGS += -D__USEISOCXX__
 LD        = $(CXX)
-LDFLAGS   = -shared -rdynamic -Wl,-soname,$(SharedLib) 
-SOFLAGS   = -shared -rdynamic -Wl,-soname,$(SONAME) 
+LDFLAGS   = -m32 -shared -rdynamic -Wl,-soname,$(SharedLib) 
+SOFLAGS   = -m32 -shared -rdynamic -Wl,-soname,$(SONAME) 
 #		$(shell root-config --libs) -lEG
 INSTALL   = install -cp
 endif
