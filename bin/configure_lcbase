@@ -206,7 +206,7 @@ if [ "x$htypflg" == "x1" ] ; then
 else
   iret=`which gfortran 2>&1 |grep -vc 'no gfortran'`
   if [ "x$iret" == "x1" ] ; then
-    echo "#define __JSF_FORTRAN_COMPILER__ gfortran " >> $specfile
+    echo "#define __JSF_FORTRAN_COMPILER__ gfortran -m32" >> $specfile
   else
     echo "#define __JSF_FORTRAN_COMPILER__ g77 " >> $specfile
   fi

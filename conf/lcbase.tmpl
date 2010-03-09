@@ -159,11 +159,15 @@ XCOMM # -----------------------------------------------------
 SOEXT         = so
 DylibSuf      = dylib	
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
-CXX           = c++ -O
 RCINTDEFINES  = -D__DARWIN__
 ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 FC            = gfortran
-CXXFLAGS      = -pipe -Wall -fsigned-char -D__GFORTRAN__ \
+FFLAGS        = -m32 -O0 -g -fno-second-underscore -D__GFORTRAN__
+CC            = gcc
+CFLAGS        = -m32 $(shell jsf-config --includes) \
+	        $(shell root-config --cflags) -D__GFORTRAN__
+CXX           = g++
+CXXFLAGS      = -m32 -O -pipe -Wall -fsigned-char -D__GFORTRAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
@@ -171,11 +175,16 @@ OSXVERSION    = $(shell sw_vers | sed -n 's/ProductVersion://p' | cut -d . -f 2)
 ifeq ($(shell [ `echo $(OSXVERSION)` -ge 5 ] && echo 1),1)
 SINGLE_MODULE = -single_module
 endif
-DYLIBFLAGS    = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
-DYLDFLAGS     = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
-SOFLAGS       = -bundle -flat_namespace -undefined dynamic_lookup
+DYLIBFLAGS    = -m32 -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
+DYLDFLAGS     = -m32 -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
+SOFLAGS       = -m32 -bundle -flat_namespace -undefined dynamic_lookup
 else
 FC            = g77
+FFLAGS        = -O0 -g -fno-second-underscore
+CC            = gcc
+CFLAGS        = $(shell jsf-config --includes) \
+	        $(shell root-config --cflags)
+CXX           = g++
 CXXFLAGS      = -pipe -Wall -fsigned-char \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
@@ -184,7 +193,7 @@ DYLIBFLAGS    = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined suppress
 DYLDFLAGS     = -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined suppress
 SOFLAGS       = -bundle -flat_namespace -undefined suppress
 endif
-LDFLAGS       = $(ANALLIB) $(GLIBS) -Xlinker -bind_at_load
+LDFLAGS       = -m32 $(ANALLIB) $(GLIBS) -Xlinker -bind_at_load
 LIBS          = $(ROOTLIBS) -L/usr/oxws/lib -lm -ldl
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
                 -lXpm -lX11 $(LIBF2C) -L/usr/osxws/lib -lm -ldl

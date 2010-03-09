@@ -41,13 +41,15 @@ else
 ifeq ($(UNAME),Darwin)
 ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 FC        = gfortran
-FFLAGS    = -O0 -g -fno-second-underscore -D__GFORTRAN__
-CFLAGS    = $(shell jsf-config --includes) \
+FFLAGS    = -m32 -O0 -g -fno-second-underscore -D__GFORTRAN__
+CC        = gcc
+CFLAGS    = -m32 $(shell jsf-config --includes) \
 	    $(shell root-config --cflags) -D__GFORTRAN__
-CXXFLAGS  = -Wall -pipe $(shell jsf-config --includes) \
+CXX       = g++
+CXXFLAGS  = -m32 -Wall -pipe $(shell jsf-config --includes) \
             -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
-DYLIBFLAGS = -dynamiclib -flat_namespace -undefined dynamic_lookup
-SOFLAGS   = -bundle -flat_namespace -undefined dynamic_lookup
+DYLIBFLAGS = -m32 -dynamiclib -flat_namespace -undefined dynamic_lookup
+SOFLAGS   = -m32 -bundle -flat_namespace -undefined dynamic_lookup
 else
 FC        = g77
 FFLAGS    = -O0 -g -fno-second-underscore
@@ -60,7 +62,7 @@ SOFLAGS   = -bundle -flat_namespace -undefined suppress
 endif
 CXXFLAGS += -D__USEISOCXX__
 LD        = $(CXX)
-LDFLAGS   = -Xlinker -bind_at_load
+LDFLAGS   = -m32 -Xlinker -bind_at_load
 INSTALL   = install -C
 else  
 
@@ -69,10 +71,10 @@ JSFCONFIGFC = ($(shell jsf-config --fc))
 # ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 ifeq ($(JSFCONFIGFC),gfortran)
 FC        = gfortran
-FFLAGS    = -O2 -g -fPIC -fno-second-underscore -D__GFORTRAN__
-CFLAGS    = -fPIC $(shell jsf-config --includes) \
+FFLAGS    = -m32 -O2 -g -fPIC -fno-second-underscore -D__GFORTRAN__
+CFLAGS    = -m32 -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags) -D__GFORTRAN__
-CXXFLAGS    = -Wall -fPIC $(shell jsf-config --includes) \
+CXXFLAGS    = -m32 -Wall -fPIC $(shell jsf-config --includes) \
 	      -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
 else
 FC        = g77
