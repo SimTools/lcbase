@@ -17,9 +17,6 @@ HELASV204   = HELASV204
 
 /* JLC Starndard Template */
 
-/* #include "config/lclib.tmpl"  */
-#include "conf/lclib.tmpl"
-
 #ifdef CXXPACKAGE
 # include "conf/lcbase.tmpl"
 
@@ -31,6 +28,9 @@ ROOTLIBS     += -lEGPythia -lEG $(CERNLIBS)
 ROOTLIBS     += -lEGPythia -lEG -Wl,-u,pytest_ $(CERNLIBS)
 # endif
 #endif
+
+/* #include "config/lclib.tmpl"  */
+#include "conf/lclib.tmpl"
 
 /* Analysis Related Fortran Libraries */
 
