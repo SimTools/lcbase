@@ -32,6 +32,10 @@ set_g77info()
   echo -n "g77 version .. "
   g77 -v > tmp-g77.$$ 2>&1
 
+# special treatment for KEKCC
+  hdomain=`hostname | sed -e "s/\.//g" `
+  hname=${hdomain:5}
+
   g77versionstr=`cat tmp-g77.$$ | grep release | grep gcc | cut -d"(" -f2 | cut -d")" -f1`
 
   g77version=`echo $g77versionstr | cut -d" " -f1 | cut -d"-" -f2 | cut -d"." -f1 `
@@ -49,8 +53,10 @@ set_g77info()
   elif [ "$g77version" == "1" ] && ["$g77mversion" == "0" ] ;  then
     g77lib="f2c"
   fi
-  echo -n "#define __G77EGCS_LIBNAME__ " >> $specfile
-  echo $g77lib  >> $specfile
+  if [ "x${hname}" != "xcckekjp" ] ; then
+    echo -n "#define __G77EGCS_LIBNAME__ " >> $specfile
+    echo $g77lib  >> $specfile
+  fi
 
   rm -f  tmp-g77.$$ 2>&1 
 }
@@ -202,7 +208,7 @@ hostname >> $specfile
 htypflg=`hostname |  grep -cw -e "cw[0-9]*" `
 if [ "x$htypflg" == "x1" ] ; then
   echo "#define __JSF_HOSTTYPE__ KEKCC " >> $specfile
-  echo "#define __JSF_FORTRAN_COMPILER__ g77 " >> $specfile
+  echo "#define __JSF_FORTRAN_COMPILER__ g77 -m32 " >> $specfile
 else
   iret=`which gfortran 2>&1 |grep -vc 'no gfortran'`
   if [ "x$iret" == "x1" ] ; then

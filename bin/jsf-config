@@ -93,6 +93,12 @@ hosttype()
  fi
 }
 
+gcc_version()
+{
+  vers=`grep __GNUC_VERSION__ ${LCBASEDIR}/include/LCBASEConfig.h | grep define | sed -e "s/  */ /g" | cut -d" " -f3`
+  echo $vers
+}
+
 # ---------------------------------------------
 while [ $# -ne 0 ] 
 do 
@@ -108,6 +114,7 @@ do
     --tmpdir) tmpdir ;;
     --fc) fc ;;
     --hosttype) hosttype ;;
+    --gcc_version) gcc_version ;;
     *)  print_help ;;
   esac
   shift
