@@ -63,8 +63,10 @@ XCOMM # -----------------------------------------------------
 XCOMM # Linux with egcs
 XCOMM # -----------------------------------------------------
 #if defined(LinuxArchitecture)
-SOEXT         = so
+COEXT         = so
+#if defined(__G77EGCS_LIBNAME__)
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
+#endif
 FC	      = $(shell jsf-config --fc)
 CXX           = g++ -O2 -g
 CXXFLAGS      = -m32 -Wall -fPIC -D__GFORTRAN__ \
