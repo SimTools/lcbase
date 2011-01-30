@@ -163,12 +163,12 @@ DylibSuf      = dylib
 LIBF2C	      = -l$(G77EGCS_LIBNAME)
 RCINTDEFINES  = -D__DARWIN__
 ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
-FC            = gfortran-32
+FC            = gfortran
 FFLAGS        = -m32 -O0 -g -fno-second-underscore -D__GFORTRAN__
-CC            = gcc-32
+CC            = gcc
 CFLAGS        = -m32 $(shell jsf-config --includes) \
 	        $(shell root-config --cflags) -D__GFORTRAN__
-CXX           = g++-32
+CXX           = g++
 CXXFLAGS      = -m32 -O -pipe -Wall -fsigned-char -D__GFORTRAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell jsf-config --includes) \
