@@ -1,3 +1,7 @@
+#
+# Set parameter here to use configurable parameters,
+# and rename this file to config.in
+#
 HAS_CONFIG_IN=y
 OSTYPE=x86_64
 BUILD_BITS=-m64
