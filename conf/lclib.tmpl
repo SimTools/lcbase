@@ -219,8 +219,8 @@ XCOMM ****************************************************************
 #define DOSHRLIB
 #endif
 #endif
+JSFCONFIGFC = $(shell jsf-config --fc)
 #ifdef DOSHRLIB
-JSFCONFIGLC = $(shell jsf-config --fc)
 ifeq ($(JSFCONFIGFC),gfortran)
 XCOMM # ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 REQUIREDLIBS =  -lgfortran -lgfortranbegin -lm -lc -rdynamic
