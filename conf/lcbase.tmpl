@@ -35,6 +35,7 @@ JSFTMPDIR     = $(shell jsf-config --tmpdir)
 JSFBINDIR     = $(shell jsf-config --bindir)
 JSFLIBDIR     = $(shell jsf-config --libdir)
 JSFINCDIR     = $(shell jsf-config --incdir)
+BUILDBITS     = $(shell jsf-config --bits)
 
 AIXLIBS       =
 
@@ -69,17 +70,17 @@ LIBF2C	      = -l$(G77EGCS_LIBNAME)
 #endif
 FC	      = $(shell jsf-config --fc)
 CXX           = g++ -O2 -g
-CXXFLAGS      = -m32 -Wall -fPIC -D__GFORTRAN__ \
+CXXFLAGS      = $(BUILDBITS) -Wall -fPIC -D__GFORTRAN__ \
 		$(EXTRACXXOPT) \
 		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
-SOFLAGS       = -m32 -shared -rdynamic
-LDFLAGS       = -m32 $(ANALLIB) $(GLIBS) -rdynamic
+SOFLAGS       = $(BUILDBITS) -shared -rdynamic
+LDFLAGS       = $(BUILDBITS) $(ANALLIB) $(GLIBS) -rdynamic
 LIBS          = $(ROOTLIBS) -lm -ldl
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
 		-lXpm -lX11 $(LIBF2C) -lm -ldl
 BLOCKDATA     = 
-FFLAGS 	     += -m32 -fPIC
+FFLAGS 	     += $(BUILDBITS) -fPIC
 ifeq ($(shell jsf-config --hosttype),KEKCC) 
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib64 \
                 -lXpm -lX11 $(LIBF2C) -lm -ldl

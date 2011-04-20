@@ -65,8 +65,12 @@ set_g77info()
 set_g95info()
 {
   specfile=$1
-  echo -n "gfortran version .. "
-  gfortran -v > tmp-g95.$$ 2>&1
+  fc=$2
+  if [ "x$fc" == "x" ] ; then
+    fc=gfortran
+  fi
+  echo -n "${fc} version .. "
+  ${fc} -v > tmp-g95.$$ 2>&1
 
   g95versionstr=`cat tmp-g95.$$ | tail -1 | sed -e 's;.* \([0-9]*\.[0-9]*\.[0-9]*\) .*;\1;'`
 
@@ -79,9 +83,9 @@ set_g95info()
   g95plevel=`echo $g95versionstr | cut -d"." -f3 `
   echo "#define __G77EGCS_PATCHLEVEL__ " $g95plevel >> $specfile
 
-  g95lib="gfortran"
-  echo -n "#define __G77EGCS_LIBNAME__ " >> $specfile
-  echo $g95lib  >> $specfile
+#  g95lib="gfortran"
+#  echo -n "#define __G77EGCS_LIBNAME__ " >> $specfile
+#  echo $g95lib  >> $specfile
 
   rm -f  tmp-g95.$$ 2>&1 
 }
@@ -93,6 +97,10 @@ set_g95info()
 
 gcppversion()
 {
+cxx=$1
+if [ -z $cxx ] ; then
+  cxx=g++
+fi
 
 cat > temp.cxx <<EOF
 #include <stdio.h>
@@ -106,6 +114,7 @@ main()
  int gnuc=__GNUC__;
  int gnuc_minor=__GNUC_MINOR__;
  int gnuc_patch=__GNUC_PATCHLEVEL__;
+ int gnuc_full_version=gnuc_patch+gnuc_minor*1000+gnuc*1000*1000;
  printf("#define __JSF_GNUC_VERSION__    %d\n",gnuc);
  printf("#define __JSF_GNUC_MINOR__      %d\n",gnuc_minor);
  printf("#define __JSF_GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
@@ -118,6 +127,9 @@ main()
  printf("#ifndef __GNUC_PATCHLEVEL__\n");
  printf("#define __GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
  printf("#endif\n");
+ printf("#ifndef __GNUC_FULL_VERSION__\n");
+ printf("#define __GNUC_FULL_VERSION__ %d\n",gnuc_full_version);
+ printf("#endif\n");
 
  const char *version=__VERSION__;
  printf("#ifndef __GNUC_VERSION_STRING\n");
@@ -128,7 +140,7 @@ main()
 }
 EOF
 
-g++ -o a.out temp.cxx
+${cxx} -o a.out temp.cxx
 ./a.out
 
 rm -f temp.cxx a.out
@@ -178,9 +190,21 @@ fi
 ############################################3
 # Set gcc version information
 ############################################3
+HAS_CONFIG_IN=n
+if [ -f config.in ] ; then
+  . config.in
+  HAS_CONFIG_IN=y
+  echo "#define __HAS_CONFIG_FILE__ ${HAS_CONFIG_IN}" >> ${specfile}
+  echo "#define __BUILD_BITS__ ${BUILD_BITS}" >> ${specfile}
+  echo "#define __CXX_COMPILER__ ${CXX_COMPILER}" >> ${specfile}
+  echo "#define __CC_COMPILER__ ${CC_COMPILER}" >> ${specfile}
+  echo "#define __F_COMPILER__ ${F_COMPILER}" >> ${specfile}
+
+fi
+
 if [ -f `which g++` -a "$systype" != "AIX" ] ; then
   echo -n "g++ version .. "
-  gcppversion >> $specfile
+  gcppversion ${CXX_COMPILER}  >> $specfile
 fi
 
 
@@ -205,27 +229,42 @@ fi
 echo -n "#define __JSF_HOSTNAME__ " >> $specfile
 hostname >> $specfile
 
-htypflg=`hostname |  grep -cw -e "cw[0-9]*" `
-if [ "x$htypflg" == "x1" ] ; then
-  echo "#define __JSF_HOSTTYPE__ KEKCC " >> $specfile
-  echo "#define __JSF_FORTRAN_COMPILER__ g77 -m32 " >> $specfile
-else
-  iret=`which gfortran 2>&1 |grep -vc 'no gfortran'`
-  if [ "x$iret" == "x1" ] ; then
-    echo "#define __JSF_FORTRAN_COMPILER__ gfortran -m32" >> $specfile
+if [ "x${HAS_CONFIG_IN}" == "xn" ] ; then
+  htypflg=`hostname |  grep -cw -e "cw[0-9]*" `
+  if [ "x$htypflg" == "x1" ] ; then
+    echo "#define __JSF_HOSTTYPE__ KEKCC " >> $specfile
+    echo "#define __JSF_FORTRAN_COMPILER__ g77 -m32 " >> $specfile
   else
-    echo "#define __JSF_FORTRAN_COMPILER__ g77 " >> $specfile
+    iret=`which gfortran 2>&1 |grep -vc 'no gfortran'`
+    if [ "x$iret" == "x1" ] ; then
+      echo "#define __JSF_FORTRAN_COMPILER__ gfortran -m32" >> $specfile
+    else
+      echo "#define __JSF_FORTRAN_COMPILER__ g77 " >> $specfile
+    fi
   fi
+else
+  echo "#define __JSF_FORTRAN_COMPILER__ ${F_COMPILER}" >> ${specfile}
 fi
 
-
-if [ "$systype" != "AIX" ] ; then
-  if  [ "`which g77 2>&1 | grep -c -e 'bin/g77' `" != 0 ] ; then
-    set_g77info $specfile
-  elif [ "`which gfortran 2>&1 | grep -c -e 'bin/gfortran'`" != 0 ]; then
-    set_g95info $specfile
+if [ "x${HAS_CONFIG_IN}" == "xn" ] ; then
+  if [ "$systype" != "AIX" ] ; then
+    if  [ "`which g77 2>&1 | grep -c -e 'bin/g77' `" != 0 ] ; then
+      set_g77info $specfile
+    elif [ "`which gfortran 2>&1 | grep -c -e 'bin/gfortran'`" != 0 ]; then
+      set_g95info $specfile
+    fi 
+  fi
+else
+  if [ "` echo ${F_COMPILER} | grep -c gfortran `" != 0 ] ; then
+    set_g95info ${specfile} ${F_COMPILER}
+  elif [ "` echo ${F_COMPILER} | grep -c g77 `" !=  0 ] ; then
+    set_g77info ${specfile}
+  else
+    echo "Error: F_COMPILER in config.in $F_COMPILER is invalid" 
+    exit
   fi 
 fi
+
 
 echo '#include "LCBASEDefines.h" ' >> $specfile
 echo "#endif" >> $specfile

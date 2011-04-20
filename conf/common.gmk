@@ -15,6 +15,7 @@ JSFBINDIR = $(shell jsf-config --bindir)
 JSFINCDIR = $(shell jsf-config --incdir)
 JSFLIBDIR = $(shell jsf-config --libdir)
 JSFTMPDIR = $(shell jsf-config --tmpdir)
+BUILDBITS = $(shell jsf-config --bits)
 DYLIBFLAGS = $(SOFLAGS)
 
 ifeq ($(UNAME),AIX)
@@ -62,7 +63,7 @@ SOFLAGS   = -bundle -flat_namespace -undefined suppress
 endif
 CXXFLAGS += -D__USEISOCXX__
 LD        = $(CXX)
-LDFLAGS   = -m32 -Xlinker -bind_at_load
+LDFLAGS   = $(BUILDBITS) -Xlinker -bind_at_load
 INSTALL   = install -C
 else  
 
@@ -71,23 +72,23 @@ JSFCONFIGFC = ($(shell jsf-config --fc))
 # ifneq ($(shell which gfortran 2>&1 | grep -vc 'no gfortran'),0)
 ifeq ($(JSFCONFIGFC),gfortran)
 FC        = gfortran
-FFLAGS    = -m32 -O2 -g -fPIC -fno-second-underscore -D__GFORTRAN__
-CFLAGS    = -m32 -fPIC $(shell jsf-config --includes) \
+FFLAGS    = $(BUILDBITS) -O2 -g -fPIC -fno-second-underscore -D__GFORTRAN__
+CFLAGS    = $(BUILDBITS) -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags) -D__GFORTRAN__
-CXXFLAGS    = -m32 -Wall -fPIC $(shell jsf-config --includes) \
+CXXFLAGS    = $(BUILDBITS) -Wall -fPIC $(shell jsf-config --includes) \
 	      -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
 else
 FC        = g77
-FFLAGS    = -m32 -O2 -g -fPIC -fno-second-underscore
-CFLAGS    = -m32 -fPIC $(shell jsf-config --includes) \
+FFLAGS    = $(BUILDBITS) -O2 -g -fPIC -fno-second-underscore
+CFLAGS    = $(BUILDBITS) -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags)
-CXXFLAGS    = -m32 -Wall -fPIC $(shell jsf-config --includes) \
+CXXFLAGS    = $(BUILDBITS) -Wall -fPIC $(shell jsf-config --includes) \
 		$(shell root-config --cflags) $(INCPATH)
 endif
 CXXFLAGS += -D__USEISOCXX__
 LD        = $(CXX)
-LDFLAGS   = -m32 -shared -rdynamic -Wl,-soname,$(SharedLib) 
-SOFLAGS   = -m32 -shared -rdynamic -Wl,-soname,$(SONAME) 
+LDFLAGS   = $(BUILDBITS) -shared -rdynamic -Wl,-soname,$(SharedLib) 
+SOFLAGS   = $(BUILDBITS) -shared -rdynamic -Wl,-soname,$(SONAME) 
 #		$(shell root-config --libs) -lEG
 INSTALL   = install -cp
 endif

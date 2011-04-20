@@ -104,9 +104,11 @@ main()
  int gnuc=__GNUC__;
  int gnuc_minor=__GNUC_MINOR__;
  int gnuc_patch=__GNUC_PATCHLEVEL__;
+ int gnuc_full_version=gnuc_patch+gnuc_minor*1000+gnuc*1000*1000
  printf("#define __JSF_GNUC_VERSION__    %d\n",gnuc);
  printf("#define __JSF_GNUC_MINOR__      %d\n",gnuc_minor);
  printf("#define __JSF_GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
+ printf("#define __JSF_GNUC_FULL_VERSION__ %d\n",gnuc_full_version);
 
  char *version=__VERSION__;
  printf("#define __JSF_GNUC_VERSION_STRING__  \"%s\"\n",version);

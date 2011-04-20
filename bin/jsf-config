@@ -22,7 +22,9 @@ print_help()
 cat <<EOF
  jsf-config [options]
  options = --has_pythia5  --lciolib  --help
-           --cflags --bindir --libdir --incidr --fc
+           --cflags --bindir --libdir --incdir --tmpdir --fc
+           --bits --hosttype --gcc_version --cc --gcc_v_major 
+           --gcc_v_minor --gcc_v_patch --gcc_v_full
 EOF
 }
 
@@ -79,18 +81,37 @@ fc()
 {
  iret=`grep -c "#define __JSF_FORTRAN_COMPILER__" $LCBASEDIR/include/LCBASEConfig.h`
  if [ "x$iret" == "x1" ] ; then
-   grep "#define __JSF_FORTRAN_COMPILER__" $LCBASEDIR/include/LCBASEConfig.h |\
+   grep "#define __JSF_FORTRAN_COMPILER__" $LCBASEDIR/include/LCBASEConfig.h | sed -e "s/  */ /g" | \
        cut -d" " -f3
  fi
+}
+
+
+getconfig()
+{
+  iret=`grep -c "#define $1 " $LCBASEDIR/include/LCBASEConfig.h` 
+  if [ "x$iret" == "x1" ] ; then
+    grep "define $1 " $LCBASEDIR/include/LCBASEConfig.h | sed -e "s/  */ /g" | \
+	cut -d" " -f3
+  fi
 }
 
 hosttype()
 {
  iret=`grep -c "#define __JSF_HOSTTYPE__ " $LCBASEDIR/include/LCBASEConfig.h`
  if [ "x$iret" == "x1" ] ; then
-   grep "#define __JSF_HOSTTYPE__" $LCBASEDIR/include/LCBASEConfig.h |\
+   grep "#define __JSF_HOSTTYPE__" $LCBASEDIR/include/LCBASEConfig.h | sed -e "s/  */ /g" | \
        cut -d" " -f3
  fi
+}
+
+bits()
+{
+  bits=`grep __BUILD_BITS__ ${LCBASEDIR}/include/LCBASEConfig.h | cut -d" " -f3`
+  if [ "x${bits}" == "x" ] ; then
+    bits=-m32
+  fi
+  echo ${bits}
 }
 
 gcc_version()
@@ -113,8 +134,14 @@ do
     --libdir) libdir ;;
     --tmpdir) tmpdir ;;
     --fc) fc ;;
+    --bits) bits ;;
     --hosttype) hosttype ;;
     --gcc_version) gcc_version ;;
+    --cc) getconfig " __CC_COMPILER__ " ;;
+    --gcc_v_major) getconfig "__GNUC_VERSION__" ;;
+    --gcc_v_minor) getconfig "__GNUC_MINOR__" ;;
+    --gcc_v_patch) getconfig "__GNUC_PATCHLEVEL__" ;;
+    --gcc_v_full) getconfig "__GNUC_FULL_VERSION__" ;; 
     *)  print_help ;;
   esac
   shift
