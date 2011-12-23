@@ -180,7 +180,8 @@ SINGLE_MODULE = -single_module
 endif
 DYLIBFLAGS    = -m32 -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
 DYLDFLAGS     = -m32 -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
-SOFLAGS       = -m32 -bundle -flat_namespace -undefined dynamic_lookup
+/* SOFLAGS       = -m32 -bundle -flat_namespace -undefined dynamic_lookup */
+SOFLAGS       = -m32 -dynamiclib -flat_namespace $(SINGLE_MODULE) -undefined dynamic_lookup
 else
 FC            = g77
 FFLAGS        = -O0 -g -fno-second-underscore

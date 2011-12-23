@@ -49,8 +49,8 @@ CFLAGS    = -m32 $(shell jsf-config --includes) \
 CXX       = g++
 CXXFLAGS  = -m32 -Wall -pipe $(shell jsf-config --includes) \
             -D__GFORTRAN__ $(shell root-config --cflags) $(INCPATH)
-DYLIBFLAGS = -m32 -dynamiclib -flat_namespace -undefined dynamic_lookup
-SOFLAGS   = -m32 -bundle -flat_namespace -undefined dynamic_lookup
+DYLIBFLAGS = -m32 -dynamiclib -flat_namespace -single_module -undefined dynamic_lookup
+SOFLAGS   = $(DYLIBFLAGS)
 else
 FC        = g77
 FFLAGS    = -O0 -g -fno-second-underscore
