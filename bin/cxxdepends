@@ -11,7 +11,7 @@ export LC_ALL=C
 uname=`uname`
 echo=`which echo`
 
-if [ $uname == "Darwin" ]; then
+if [ x`root-config --arch` == "xmacosx" ]; then
 cxx="gcc-32"
 else
 cxx="gcc"
