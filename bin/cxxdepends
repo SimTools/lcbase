@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 #######################
 #  create a list of depend files of g++
 #$Id$
